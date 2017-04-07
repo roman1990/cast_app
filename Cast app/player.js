@@ -20,6 +20,9 @@
  * Creates new player for video and ad playback.
  * @param {cast.receiver.MediaManager} mediaElement The video element.
  */
+
+var mediaElement = document.getElementById('mediaElement');
+
 var Player = function(mediaElement) {
   var namespace = 'urn:x-cast:com.google.ads.ima.cast';
   this.mediaElement_ = mediaElement;
@@ -70,17 +73,67 @@ Player.prototype.setupCallbacks_ = function() {
     }
   };
 
-  // Initializes IMA SDK when Media Manager is loaded.
-  this.mediaManager_.onLoad = function(event) {
-    self.originalOnLoadEvent_ = event;
-    self.initIMA_();
-    self.originalOnLoad_(self.originalOnLoadEvent_);
-  };
+	  // Initializes IMA SDK when Media Manager is loaded.
+	this.mediaManager_.onLoad = function(event) {
+		self.originalOnLoadEvent_ = event;
+		// init IMA client
+		self.initIMA_();
+		self.broadcast_("on load");
+		// The Media Player Library requires that you call player unload between
+		// different invocations.
+		if (window.player !== null) {
+			player.unload(); // Must unload before starting again.
+			window.player = null;
+		}
+		
+		var url = event.data['media']['contentId'];
+
+		self.broadcast_("received url " + url);
+
+		// Create the Host - much of your interaction with the library uses the
+		// Host and
+		// methods you provide to it.
+		window.host = new cast.player.api.Host({
+			'mediaElement' : mediaElement,
+			'url' : url
+		});
+
+		var initStart = event.data['media']['currentTime'] || 0;
+		var autoplay = event.data['autoplay'] || true;
+		var protocol = null;
+		mediaElement.autoplay = autoplay;
+
+		protocol = cast.player.api.CreateHlsStreamingProtocol(host);
+
+		// How to override a method in Host. I know that it's safe to just
+		// provide this
+		// method.
+		host.onError = function(errorCode) {
+			self.broadcast_("Fatal Error - " + errorCode);
+			if (window.player) {
+				window.player.unload();
+				window.player = null;
+			}
+		};
+
+		if (protocol !== null) {
+			self.broadcast_("Starting Media Player Library");
+			window.player = new cast.player.api.Player(host);
+			window.player.load(protocol, initStart);
+		} else {
+			// do the default way
+			self.originalOnLoad_(self.originalOnLoadEvent_);
+		}
+
+	};
+	
 };
 
 /**
  * Sends messages to all connected sender apps.
- * @param {!string} message Message to be sent to senders.
+ * 
+ * @param {!string}
+ *            message Message to be sent to senders.
  * @private
  */
 Player.prototype.broadcast_ = function(message) {
