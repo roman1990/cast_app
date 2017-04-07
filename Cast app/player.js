@@ -78,7 +78,7 @@ Player.prototype.setupCallbacks_ = function() {
 		self.originalOnLoadEvent_ = event;
 		// init IMA client
 		self.initIMA_();
-		self.broadcast_("on load");
+		self.broadcast_("entered on load");
 		// The Media Player Library requires that you call player unload between
 		// different invocations.
 		if (window.player !== null) {
@@ -122,6 +122,7 @@ Player.prototype.setupCallbacks_ = function() {
 			window.player.load(protocol, initStart);
 		} else {
 			// do the default way
+			self.broadcast_("Starting original Player Library, something is wrong");
 			self.originalOnLoad_(self.originalOnLoadEvent_);
 		}
 
