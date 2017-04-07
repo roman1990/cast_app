@@ -106,7 +106,7 @@ Player.prototype.setupCallbacks_ = function() {
 		var autoplay = event.data['autoplay'] || true;
 		self.broadcast_("init autoplay");
 		var protocol = null;
-		mediaElement.autoplay = autoplay;
+		mediaElement.autoplay = false;//TODO fix this
 
 		protocol = cast.player.api.CreateHlsStreamingProtocol(host);
 		self.broadcast_("init protocol");
