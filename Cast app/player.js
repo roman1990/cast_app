@@ -79,6 +79,11 @@ Player.prototype.setupCallbacks_ = function() {
 		// init IMA client
 		self.initIMA_();
 		self.broadcast_("entered on load");
+//		var url = event.data['media']['contentId'];
+		var url = "http://mediaservicesmc.streaming.mediaservices.windows.net/69d4487c-0072-4754-9fd4-ab5c79f582e6/Buick+Encore_clip2.ism/manifest(format=m3u8-aapl-v3)";
+		
+		self.broadcast_("received url " + url);
+
 		// The Media Player Library requires that you call player unload between
 		// different invocations.
 		if (window.player !== null) {
@@ -86,9 +91,7 @@ Player.prototype.setupCallbacks_ = function() {
 			window.player = null;
 		}
 		
-		var url = event.data['media']['contentId'];
-
-		self.broadcast_("received url " + url);
+		
 
 		// Create the Host - much of your interaction with the library uses the
 		// Host and
