@@ -90,7 +90,7 @@ Player.prototype.setupCallbacks_ = function() {
 			player.unload(); // Must unload before starting again.
 			window.player = null;
 		}
-		
+		self.broadcast_("clean video player");
 		
 
 		// Create the Host - much of your interaction with the library uses the
