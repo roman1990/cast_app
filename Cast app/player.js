@@ -100,13 +100,16 @@ Player.prototype.setupCallbacks_ = function() {
 			'mediaElement' : mediaElement,
 			'url' : url
 		});
-
+		self.broadcast_("init host");
 		var initStart = event.data['media']['currentTime'] || 0;
+		self.broadcast_("init initStart");
 		var autoplay = event.data['autoplay'] || true;
+		self.broadcast_("init autoplay");
 		var protocol = null;
 		mediaElement.autoplay = autoplay;
 
 		protocol = cast.player.api.CreateHlsStreamingProtocol(host);
+		self.broadcast_("init protocol");
 
 		// How to override a method in Host. I know that it's safe to just
 		// provide this
