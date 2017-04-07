@@ -86,10 +86,10 @@ Player.prototype.setupCallbacks_ = function() {
 
 		// The Media Player Library requires that you call player unload between
 		// different invocations.
-		if (window.player !== null) {
-			player.unload(); // Must unload before starting again.
-			window.player = null;
-		}
+//		if (window.player !== null) {
+//			player.unload(); // Must unload before starting again.
+//			window.player = null;
+//		}
 		self.broadcast_("clean video player");
 		
 
